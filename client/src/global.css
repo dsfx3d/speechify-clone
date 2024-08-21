@@ -1,0 +1,21 @@
+:root {
+  --color-dark: rgb(17, 17, 18);
+  --color-slate: #0B0C1A;
+  --color-primary: #2137FC;
+  --color-primary-light: #6b78fc;
+  --color-error: #FF4D4F;
+  --color-muted: #587393;
+  --border-radius: 1.25rem;
+}
+
+* {
+  font-family: Helvetica, sans-serif;
+}
+
+body {
+  background-color: var(--color-dark);
+}
+
+.pointer {
+  cursor: pointer;
+}
