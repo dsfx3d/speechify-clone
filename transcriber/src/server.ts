@@ -1,15 +1,17 @@
+import { createTranscriptionServer } from './createTranscriptionServer';
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import http from "http";
 import path from "path";
-import initializeWebSocket from "./websocket.js";
 import { Server } from "socket.io";
+import { env } from './env';
+import { createDeepgramServer } from './createDeepgramServer';
 
 // No need to edit any of this code
 
 const app = express();
-const server = http.Server(app);
+const server = new http.Server(app);
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -17,7 +19,7 @@ const io = new Server(server, {
   },
 });
 
-initializeWebSocket(io);
+createDeepgramServer(io, env.DEEPGRAM_API_KEY);
 
 app.use(cors({ credentials: false, origin: "*" }));
 app.use(express.json());

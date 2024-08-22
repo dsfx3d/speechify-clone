@@ -4,3 +4,4 @@
 /public
 sessions/
 server-test-results.xml
+coverage/
