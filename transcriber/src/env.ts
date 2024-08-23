@@ -1,3 +1,3 @@
-import { EnvSchema } from "./schemas/EnvSchema";
+import {EnvSchema} from "./schemas/EnvSchema";
 
 export const env = EnvSchema.parse(process.env);

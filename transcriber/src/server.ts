@@ -1,14 +1,13 @@
-import { createTranscriptionServer } from './createTranscriptionServer';
 import "dotenv/config";
-import express from "express";
+import {EventMap} from "./EventMap";
+import {RequestMap} from "./RequestMap";
+import {Server} from "socket.io";
+import {createDeepgramServer} from "./createDeepgramServer";
+import {env} from "./env";
 import cors from "cors";
-import http from "http";
-import path from "path";
-import { Server } from "socket.io";
-import { env } from './env';
-import { createDeepgramServer } from './createDeepgramServer';
-import { RequestMap } from './RequestMap';
-import { EventMap } from './EventMap';
+import express from "express";
+import http from "node:http";
+import path from "node:path";
 
 const app = express();
 const server = new http.Server(app);
@@ -21,7 +20,7 @@ const io = new Server<RequestMap, EventMap>(server, {
 
 createDeepgramServer(io, env.DEEPGRAM_API_KEY);
 
-app.use(cors({ credentials: false, origin: "*" }));
+app.use(cors({credentials: false, origin: "*"}));
 app.use(express.json());
 
 const staticPath = path.resolve("public/");

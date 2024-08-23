@@ -5,4 +5,3 @@ export enum TranscriberEvent {
   Error = "transcriber:error",
   Closed = "transcriber:closed",
 }
-
