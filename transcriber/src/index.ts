@@ -2,6 +2,8 @@ export * from './createDeepgramServer';
 export * from './createMessageHandlers';
 export * from './createTranscriptionServer';
 export * from './env';
+export * from './EventMap';
+export * from './RequestMap';
 export * from './schemas/ConfigSchema';
 export * from './schemas/EnvSchema';
 export * from './schemas/TranscribeRequestSchema';

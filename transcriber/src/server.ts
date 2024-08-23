@@ -7,12 +7,12 @@ import path from "path";
 import { Server } from "socket.io";
 import { env } from './env';
 import { createDeepgramServer } from './createDeepgramServer';
-
-// No need to edit any of this code
+import { RequestMap } from './RequestMap';
+import { EventMap } from './EventMap';
 
 const app = express();
 const server = new http.Server(app);
-const io = new Server(server, {
+const io = new Server<RequestMap, EventMap>(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],

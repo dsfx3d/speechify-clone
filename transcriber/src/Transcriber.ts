@@ -1,4 +1,3 @@
-import EventEmitter from "events";
 import {
   DeepgramClient,
   ListenLiveClient,
@@ -9,12 +8,13 @@ import {
 import { TranscriberEvent } from "./TranscriberEvent";
 import { z } from "zod";
 import { ConfigSchema } from "./schemas/ConfigSchema";
+import { TranscriberSocket } from "./TranscriberSocket";
 
 export class Transcriber {
   private client?: ListenLiveClient;
 
   constructor(private deepgram: DeepgramClient) { }
-  connect(dispatch: EventEmitter, config: z.infer<typeof ConfigSchema>) {
+  connect(dispatch: TranscriberSocket, config: z.infer<typeof ConfigSchema>) {
     const options = this.toDeepgramConfig(config);
     const client = this.deepgram.listen.live(options);
     const eventHandlers = this.createEventListeners(dispatch);
@@ -32,7 +32,7 @@ export class Transcriber {
     this.client?.isConnected() && this.client?.requestClose();
   }
 
-  private createEventListeners(dispatch: EventEmitter) {
+  private createEventListeners(dispatch: TranscriberSocket) {
     return [
       [LiveTranscriptionEvents.Open, () => dispatch.emit(TranscriberEvent.Ready)],
       [LiveTranscriptionEvents.Transcript, (event: LiveTranscriptionEvent) => (
@@ -42,13 +42,13 @@ export class Transcriber {
         dispatch.emit(TranscriberEvent.Closed)
       )],
       [LiveTranscriptionEvents.Error, (err: unknown) => {
-        dispatch.emit(TranscriberEvent.Error, err);
+        dispatch.emit(TranscriberEvent.Error, `${err}`);
       }],
     ] as const
   }
 
   private emitTranscript(
-    dispatch: EventEmitter,
+    dispatch: TranscriberSocket,
     event: LiveTranscriptionEvent,
   ) {
     const eventName = this.toTranscriptType(event);
