@@ -12,4 +12,4 @@ export * from './SocketEvent';
 export * from './Transcriber';
 export * from './TranscriberEvent';
 export * from './TranscriberRequest';
-export * from './withValidation';
+export * from './createHandler';

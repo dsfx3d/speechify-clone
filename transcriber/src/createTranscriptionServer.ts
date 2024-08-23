@@ -1,21 +1,34 @@
 import { SocketEvent } from "./SocketEvent";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import { TranscriberRequest } from "./TranscriberRequest";
-import { createMessageHandlers } from "./createMessageHandlers";
 import { Transcriber } from "./Transcriber";
+import { RequestMap } from "./RequestMap";
+import { EventMap } from "./EventMap";
+import { ConfigSchema } from "./schemas/ConfigSchema";
+import { TranscribeRequestSchema } from "./schemas/TranscribeRequestSchema";
+import { createHandler } from "./createHandler";
+import { TranscriberEvent } from "./TranscriberEvent";
+
 
 export const createTranscriptionServer = (
-  io: Server,
+  io: Server<RequestMap, EventMap>,
   transcriber: Transcriber,
 ): Server => {
-  const {
-    connectTranscriber,
-    transcribe,
-    disconnectTranscriber,
-  } = createMessageHandlers(transcriber);
-  io.on(SocketEvent.Connect, (socket: Socket) => {
-    socket.on(TranscriberRequest.Open, connectTranscriber(socket));
-    socket.on(TranscriberRequest.Transcribe, transcribe(socket));
+  io.on(SocketEvent.Connect, (socket) => {
+    const disconnectTranscriber = () => transcriber.disconnect();
+    const handler = createHandler((validationErrors) => {
+      socket.emit(TranscriberEvent.Error, validationErrors.toString());
+    });
+
+    const connectTranscriber = handler(ConfigSchema, (config) => {
+      transcriber.connect(socket, config);
+    });
+    const transcribe = handler(TranscribeRequestSchema, ({ audioChunk }) => {
+      transcriber.requestTranscription(audioChunk);
+    });
+
+    socket.on(TranscriberRequest.Open, connectTranscriber);
+    socket.on(TranscriberRequest.Transcribe, transcribe);
     socket.on(TranscriberRequest.Close, disconnectTranscriber);
     socket.on(SocketEvent.Disconnect, disconnectTranscriber);
   });
