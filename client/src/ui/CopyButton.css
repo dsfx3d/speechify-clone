@@ -1,6 +1,0 @@
-#copy-button {
-  color: var(--color-primary);
-  user-select: none;
-  padding: 0.2rem;
-  border-bottom: 1px solid var(--color-primary);
-}
