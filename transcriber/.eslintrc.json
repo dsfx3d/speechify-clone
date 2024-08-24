@@ -1,3 +1,4 @@
 {
-  "extends": "eslint-config-dsfx3d"
+  "extends": "eslint-config-dsfx3d",
+  "ignorePatterns": ["node_modules/", "dist/", "coverage/"]
 }
